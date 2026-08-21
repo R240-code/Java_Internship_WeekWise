@@ -4,25 +4,21 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-/**
- * Simple helper to provide a JDBC Connection.
- * Reads connection properties from system properties:
- *   -db.url (default jdbc:mysql://localhost:3306/edutrack)
- *   -db.user (default root)
- *   -db.pass (default empty)
- *
- * Update these via -D flags or replace defaults with your own values.
- */
 public class DatabaseConnection {
+    private static final String URL =
+            "jdbc:mysql://localhost:3306/student_management_db";
+    private static final String USER = "root";
+    private static final String PASSWORD = "";
+
     public static Connection getConnection() throws SQLException {
-        String url = System.getProperty("db.url", "jdbc:mysql://localhost:3306/edutrack");
-        String user = System.getProperty("db.user", "root");
-        String pass = System.getProperty("db.pass", "");
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException ignored) {
-            // Driver not on classpath; DriverManager may still work if using JDBC 4+ drivers
+        } catch (ClassNotFoundException e) {
+            throw new SQLException(
+                    "MySQL Connector/J is not added to this project.", e
+            );
         }
-        return DriverManager.getConnection(url, user, pass);
+
+        return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 }
